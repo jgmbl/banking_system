@@ -4,6 +4,7 @@ import pytest
 
 from bank.Client import Client
 
+
 @pytest.mark.parametrize(
     "name, balance",
     [
@@ -12,13 +13,16 @@ from bank.Client import Client
         ("Lisa", Decimal("100.00"))
     ]
 )
-
 def test_depositing(name, balance):
-    # Arrange
-    client = Client(name, balance)
+    if balance < 0:
+        with pytest.raises(ValueError):
+            Client(name, balance)
+    else:
+        # Arrange
+        client = Client(name, balance)
 
-    # Act
-    deposit = client.depositing(Decimal("50.00"))
+        # Act
+        deposit = client.depositing(Decimal("50.00"))
 
-    # Assert
-    assert client.balance == balance + deposit
+        # Assert
+        assert client.balance == balance + deposit
