@@ -12,4 +12,3 @@ class Client:
     def depositing(self, deposit: Decimal):
         self.balance += deposit
         return deposit
-

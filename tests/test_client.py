@@ -10,8 +10,8 @@ from bank.Client import Client
     [
         ("John", Decimal("-1.00")),
         ("Peter", Decimal("0.00")),
-        ("Lisa", Decimal("100.00"))
-    ]
+        ("Lisa", Decimal("100.00")),
+    ],
 )
 def test_depositing(name, balance):
     if balance < 0:
