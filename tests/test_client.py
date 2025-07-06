@@ -2,7 +2,7 @@ from decimal import Decimal
 
 import pytest
 
-from bank import Client
+from bank.Client import Client
 
 @pytest.mark.parametrize(
     "name, balance",
@@ -13,9 +13,9 @@ from bank import Client
     ]
 )
 
-def test_depositing():
+def test_depositing(name, balance):
     # Arrange
-    client = Client(name=name, balance=balance)
+    client = Client(name, balance)
 
     # Act
     deposit = client.depositing(Decimal("50.00"))
