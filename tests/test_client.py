@@ -5,7 +5,7 @@ import pytest
 from bank.Client import Client
 
 init_valid_name_data = ["Adam", "John", "Lisa"]
-init_invalid_name_data = ["", "     ", "!@#$%>"]
+init_invalid_name_data = ["", "     ", "!@#$%>", 0]
 
 init_valid_balance_data = [
     Decimal("0.00"),
@@ -37,7 +37,10 @@ def test_init_invalid_balance_validation(name, balance):
 @pytest.mark.parametrize("name", init_invalid_name_data)
 @pytest.mark.parametrize("balance", init_valid_balance_data)
 def test_init_invalid_name_validation(name, balance):
-    if not name.isalpha():
+    if not isinstance(name, str):
+        with pytest.raises(TypeError):
+            Client(name, balance)
+    elif not name.isalpha():
         with pytest.raises(ValueError):
             Client(name, balance)
 
