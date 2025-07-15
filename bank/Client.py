@@ -31,54 +31,40 @@ class Client:
         anonymized_name = Client.anonymized_name(name, 10)
         try:
             if not isinstance(name, str):
-                logger.error(
-                    f"Provided name value {anonymized_name} is not a string"
-                )
+                logger.error("Provided name value is not a string")
                 return False
             if not name:
-                logger.error(
-                    f"Provided name value {anonymized_name} cannot be empty "
-                    f"or None"
-                )
+                logger.error("Provided name value cannot be empty or None")
                 return False
             elif not name.isalpha():
-                logger.error(
-                    f"Provided name {anonymized_name} must contain only "
-                    f"letters"
-                )
+                logger.error("Provided name must contain only letters")
                 return False
-            logger.debug(f"Provided name {anonymized_name} passed validation")
+            logger.debug("Provided name assed validation")
             return True
         except Exception as e:
             logger.error(f"Unexpected error during name validation: {e}")
         finally:
-            logger.debug(
-                f"Finished name validation with for input: {anonymized_name}"
-            )
+            logger.debug("Finished name validation")
 
     @staticmethod
     def validate_balance(balance):
         try:
             if not isinstance(balance, Decimal):
                 logger.error(
-                    f"The provided balance {balance} is not in a valid "
-                    f"currency format"
+                    "The provided balance is not in a valid currency format"
                 )
                 return False
             elif balance < Decimal("0.00"):
                 logger.error(
-                    f"Current value of balance {balance} cannot be less than "
-                    f"0.00"
+                    "Current value of balance cannot be less than 0.00"
                 )
                 return False
-            logger.debug(f"Provided balance {balance} passed validation")
+            logger.debug("Provided balance passed validation")
             return True
         except Exception as e:
             logger.error(f"Unexpected error during balance validation: {e}")
         finally:
-            logger.debug(
-                f"Finished balance validation with for input: {balance}"
-            )
+            logger.debug("Finished balance validation")
 
     @staticmethod
     def anonymized_name(name, num):
