@@ -4,8 +4,6 @@ import pytest
 
 from bank.Client import Client
 
-anonymized_name_length = 15
-
 init_valid_name_data = ["Adam", "John", "Lisa"]
 init_invalid_name_data = ["", "     ", "!@#$%>", 0, None]
 
@@ -72,8 +70,8 @@ def test_depositing(name, balance):
 
 
 @pytest.mark.parametrize("name", init_valid_name_data)
-def test_anonymize_valid_name(name):
-    anonymized_name = Client.anonymized_name(name, anonymized_name_length)
+def test_anonymize_name(name):
+    anonymized_name = Client.anonymized_name(len(name))
 
     assert isinstance(anonymized_name, str)
     assert anonymized_name != name
