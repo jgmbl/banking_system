@@ -19,8 +19,13 @@ class Client:
 
         self.name = name
         self.balance = balance
+        self.anonymized_name = Client.anonymized_name(len(name))
+        self.anonymized_balance = "***"
 
-        logger.info("Successfully initialized Client class")
+        logger.info(
+            f"Successfully initialized Client class for name "
+            f"{self.anonymized_name} and balance {self.anonymized_balance}"
+        )
 
     def depositing(self, deposit: Decimal):
         self.balance += deposit
@@ -28,7 +33,6 @@ class Client:
 
     @staticmethod
     def validate_name(name):
-        anonymized_name = Client.anonymized_name(name, 10)
         try:
             if not isinstance(name, str):
                 logger.error("Provided name value is not a string")
@@ -39,7 +43,7 @@ class Client:
             elif not name.isalpha():
                 logger.error("Provided name must contain only letters")
                 return False
-            logger.debug("Provided name assed validation")
+            logger.debug("Provided name passed validation")
             return True
         except Exception as e:
             logger.error(f"Unexpected error during name validation: {e}")
@@ -67,15 +71,12 @@ class Client:
             logger.debug("Finished balance validation")
 
     @staticmethod
-    def anonymized_name(name, num):
-        default_anonymized_name = "*" * num
+    def anonymized_name(length):
         try:
-            if not isinstance(name, str) or not name:
-                return default_anonymized_name
-            return "".join(
-                random.choices(string.ascii_letters + string.digits, k=num)
+            result = "".join(
+                random.choices(string.ascii_letters + string.digits, k=length)
             )
+            logger.debug(f"Anonymizing name ended with result: {result}")
+            return result
         except Exception as e:
             logger.error(f"Unexpected error during anonymizing name: {e}")
-        finally:
-            logger.debug("Finished anonymizing name")
