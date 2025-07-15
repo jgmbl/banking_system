@@ -14,6 +14,8 @@ init_valid_balance_data = [
 ]
 init_invalid_balance_data = [None, "Hello world!", Decimal("-0.01")]
 
+init_valid_deposit_data = [Decimal("50.00"), Decimal("0.01"), Decimal("2.22")]
+
 
 @pytest.mark.parametrize("name", init_valid_name_data)
 def test_valid_name_validation(name):
@@ -60,18 +62,19 @@ def test_init_invalid_balance_client(name, balance):
 
 
 @pytest.mark.parametrize("name", init_valid_name_data)
-@pytest.mark.parametrize("balance", init_valid_balance_data)
-def test_depositing(name, balance):
-    client = Client(name, balance)
-
-    deposit = client.depositing(Decimal("50.00"))
-
-    assert client.balance == balance + deposit
-
-
-@pytest.mark.parametrize("name", init_valid_name_data)
 def test_anonymize_name(name):
     anonymized_name = Client.anonymized_name()
 
     assert isinstance(anonymized_name, str)
     assert anonymized_name != name
+
+
+@pytest.mark.parametrize("name", init_valid_name_data)
+@pytest.mark.parametrize("balance", init_valid_balance_data)
+@pytest.mark.parametrize("deposit", init_valid_deposit_data)
+def test_depositing(name, balance, deposit):
+    client = Client(name, balance)
+
+    deposit = client.depositing(balance)
+
+    assert client.balance == balance + deposit
