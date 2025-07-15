@@ -5,7 +5,7 @@ import pytest
 from bank.Client import Client
 
 init_valid_name_data = ["Adam", "John", "Lisa"]
-init_invalid_name_data = ["", "     ", "!@#$%>", 0]
+init_invalid_name_data = ["", "     ", "!@#$%>", 0, None]
 
 init_valid_balance_data = [
     Decimal("0.00"),
@@ -67,3 +67,20 @@ def test_depositing(name, balance):
     deposit = client.depositing(Decimal("50.00"))
 
     assert client.balance == balance + deposit
+
+
+@pytest.mark.parametrize("name", init_valid_name_data)
+def test_anonymize_valid_name(name):
+    anonymized_name = Client.anonymize_name(name)
+
+    assert len(anonymized_name) == 10
+    assert anonymized_name != name
+
+
+@pytest.mark.parametrize("name", [1234, 11.00, Decimal("12.00"), None, True])
+def test_anonymize_invalid_name(name):
+    anonymized_name = Client.anonymize_name(name)
+
+    assert len(anonymized_name) == len(Client.default_anonymize_value)
+    assert anonymized_name != name
+    assert anonymized_name == Client.default_anonymize_value
