@@ -71,7 +71,7 @@ def test_depositing(name, balance):
 
 @pytest.mark.parametrize("name", init_valid_name_data)
 def test_anonymize_name(name):
-    anonymized_name = Client.anonymized_name(len(name))
+    anonymized_name = Client.anonymized_name()
 
     assert isinstance(anonymized_name, str)
     assert anonymized_name != name

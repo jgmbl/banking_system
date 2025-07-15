@@ -19,7 +19,7 @@ class Client:
 
         self.name = name
         self.balance = balance
-        self.anonymized_name = Client.anonymized_name(len(name))
+        self.anonymized_name = Client.anonymized_name()
         self.anonymized_balance = "***"
 
         logger.info(
@@ -71,7 +71,7 @@ class Client:
             logger.debug("Finished balance validation")
 
     @staticmethod
-    def anonymized_name(length):
+    def anonymized_name(length=15):
         try:
             result = "".join(
                 random.choices(string.ascii_letters + string.digits, k=length)
