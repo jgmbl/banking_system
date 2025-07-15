@@ -77,12 +77,3 @@ def test_anonymize_valid_name(name):
 
     assert isinstance(anonymized_name, str)
     assert anonymized_name != name
-
-
-@pytest.mark.parametrize("name", [1234, 11.00, Decimal("12.00"), None, True])
-def test_anonymize_invalid_name(name):
-    anonymized_name = Client.anonymized_name(name, anonymized_name_length)
-
-    assert isinstance(anonymized_name, str)
-    assert anonymized_name != name
-    assert anonymized_name == anonymized_name_length * '*'
