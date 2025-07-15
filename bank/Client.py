@@ -1,7 +1,7 @@
 import logging.config
+import random
 import string
 from decimal import Decimal
-import random
 
 logging.config.fileConfig("../logging.ini")
 logger = logging.getLogger("Client")
@@ -10,13 +10,11 @@ logger = logging.getLogger("Client")
 class Client:
     def __init__(self, name, balance):
         if not Client.validate_name(name):
-            logger.error(f'Invalid name "{name}" provided to the constructor')
+            logger.error("Invalid name provided to the constructor")
             raise ValueError("Invalid name")
 
         if not Client.validate_balance(balance):
-            logger.error(
-                f"Invalid balance {balance} provided to the constructor"
-            )
+            logger.error("Invalid balance provided to the constructor")
             raise ValueError("Invalid balance")
 
         self.name = name
@@ -30,25 +28,32 @@ class Client:
 
     @staticmethod
     def validate_name(name):
+        anonymized_name = Client.anonymized_name(name, 10)
         try:
             if not isinstance(name, str):
-                logger.error(f'Provided name value "{name}" is not a string')
+                logger.error(
+                    f"Provided name value {anonymized_name} is not a string"
+                )
                 return False
             if not name:
-                logger.error(f'Provided name value "{name}" cannot be empty or None')
+                logger.error(
+                    f"Provided name value {anonymized_name} cannot be empty "
+                    f"or None"
+                )
                 return False
             elif not name.isalpha():
                 logger.error(
-                    f'Provided name "{name}" must contain only letters'
+                    f"Provided name {anonymized_name} must contain only "
+                    f"letters"
                 )
                 return False
-            logger.debug(f'Provided name "{name}" passed validation')
+            logger.debug(f"Provided name {anonymized_name} passed validation")
             return True
         except Exception as e:
             logger.error(f"Unexpected error during name validation: {e}")
         finally:
             logger.debug(
-                f"Finished name validation with the for input: {name}"
+                f"Finished name validation with for input: {anonymized_name}"
             )
 
     @staticmethod
@@ -72,5 +77,19 @@ class Client:
             logger.error(f"Unexpected error during balance validation: {e}")
         finally:
             logger.debug(
-                f"Finished balance validation with the for input: {balance}"
+                f"Finished balance validation with for input: {balance}"
             )
+
+    @staticmethod
+    def anonymized_name(name, num):
+        default_anonymized_name = "*" * num
+        try:
+            if not isinstance(name, str) or not name:
+                return default_anonymized_name
+            return "".join(
+                random.choices(string.ascii_letters + string.digits, k=num)
+            )
+        except Exception as e:
+            logger.error(f"Unexpected error during anonymizing name: {e}")
+        finally:
+            logger.debug("Finished anonymizing name")
