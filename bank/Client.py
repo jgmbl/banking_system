@@ -1,5 +1,7 @@
 import logging.config
+import string
 from decimal import Decimal
+import random
 
 logging.config.fileConfig("../logging.ini")
 logger = logging.getLogger("Client")
@@ -31,6 +33,9 @@ class Client:
         try:
             if not isinstance(name, str):
                 logger.error(f'Provided name value "{name}" is not a string')
+                return False
+            if not name:
+                logger.error(f'Provided name value "{name}" cannot be empty or None')
                 return False
             elif not name.isalpha():
                 logger.error(
