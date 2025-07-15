@@ -7,11 +7,15 @@ logger = logging.getLogger("Client")
 
 class Client:
     def __init__(self, name, balance):
-        self._validate_name(name)
-        logger.debug("Name passed validation")
+        if not Client.validate_name(name):
+            logger.error(f'Invalid name "{name}" provided to the constructor')
+            raise ValueError("Invalid name")
 
-        self._validate_balance(balance)
-        logger.debug("Balance passed validation")
+        if not Client.validate_balance(balance):
+            logger.error(
+                f"Invalid balance {balance} provided to the constructor"
+            )
+            raise ValueError("Invalid balance")
 
         self.name = name
         self.balance = balance
@@ -22,22 +26,46 @@ class Client:
         self.balance += deposit
         return deposit
 
-    def _validate_name(self, name):
-        if not isinstance(name, str):
-            logger.error(f'Provided name value "{name}" is not a string')
-            raise TypeError
-        elif not name.isalpha():
-            logger.error(f'Provided name "{name}" must contain only letters')
-            raise ValueError
+    @staticmethod
+    def validate_name(name):
+        try:
+            if not isinstance(name, str):
+                logger.error(f'Provided name value "{name}" is not a string')
+                return False
+            elif not name.isalpha():
+                logger.error(
+                    f'Provided name "{name}" must contain only letters'
+                )
+                return False
+            logger.debug(f'Provided name "{name}" passed validation')
+            return True
+        except Exception as e:
+            logger.error(f"Unexpected error during name validation: {e}")
+        finally:
+            logger.debug(
+                f"Finished name validation with the for input: {name}"
+            )
 
-    def _validate_balance(self, balance):
-        if not isinstance(balance, Decimal):
-            logger.error(
-                f"The provided balance {balance} is not in a valid currency format"
+    @staticmethod
+    def validate_balance(balance):
+        try:
+            if not isinstance(balance, Decimal):
+                logger.error(
+                    f"The provided balance {balance} is not in a valid "
+                    f"currency format"
+                )
+                return False
+            elif balance < Decimal("0.00"):
+                logger.error(
+                    f"Current value of balance {balance} cannot be less than "
+                    f"0.00"
+                )
+                return False
+            logger.debug(f"Provided balance {balance} passed validation")
+            return True
+        except Exception as e:
+            logger.error(f"Unexpected error during balance validation: {e}")
+        finally:
+            logger.debug(
+                f"Finished balance validation with the for input: {balance}"
             )
-            raise TypeError
-        elif balance < Decimal("0.00"):
-            logger.error(
-                f"Current value of balance {balance} cannot be less than 0.00"
-            )
-            raise ValueError
