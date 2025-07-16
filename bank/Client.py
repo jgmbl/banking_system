@@ -12,24 +12,16 @@ def log(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logger.debug(f"Starting {func.__name__.replace('_', ' ')}")
-        operation_result = False
         try:
             result = func(*args, **kwargs)
-            operation_result = True
             return result
-            logger.debug(
-                f"Successfully done {func.__name__.replace('_', ' ')}"
-            )
         except Exception as e:
             logger.error(
                 f"Exception raised in {func.__name__}. Exception: {str(e)}"
             )
             raise e
         finally:
-            logger.debug(
-                f"Ending {func.__name__.replace('_', ' ')} with the "
-                f"result: {operation_result}"
-            )
+            logger.debug(f"Finished {func.__name__.replace('_', ' ')}")
 
     return wrapper
 
@@ -37,17 +29,15 @@ def log(func):
 class Client:
     def __init__(self, name, balance):
         logger.debug("Starting Client class initialization")
-        if not Client.name_validation(name):
-            logger.error("Invalid name provided to the constructor")
+        if not self.name_validation(name):
             raise ValueError("Invalid name")
 
-        if not Client.monetary_values_validation(balance):
-            logger.error("Invalid balance provided to the constructor")
+        if not self.monetary_values_validation(balance):
             raise ValueError("Invalid balance")
 
         self.name = name
         self.balance = balance
-        self.anonymized_name = Client.anonymize_name()
+        self.anonymized_name = self.anonymize_name()
         self.anonymized_monetary_value = "***"
 
         logger.info(
@@ -58,7 +48,6 @@ class Client:
 
     def depositing(self, deposit):
         if not Client.monetary_values_validation(deposit):
-            logger.error("Invalid amount of deposit")
             raise ValueError("Provided invalid deposit")
         self.balance += deposit
         logger.info(f"Deposited {self.anonymized_monetary_value} to balance")
