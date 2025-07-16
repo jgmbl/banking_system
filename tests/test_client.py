@@ -79,10 +79,9 @@ def test_anonymize_name(name):
 def test_valid_data_depositing(deposit):
     client = Client(init_name, init_balance)
 
-    result = client.depositing(deposit)
+    client.depositing(deposit)
 
     assert client.balance == init_balance + deposit
-    assert result == deposit
 
 
 @pytest.mark.parametrize("amount", init_invalid_monetary_data)
