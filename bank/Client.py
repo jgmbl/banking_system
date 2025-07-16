@@ -46,12 +46,12 @@ class Client:
             f"{self.anonymized_monetary_value}"
         )
 
-    def depositing(self, deposit):
-        if not Client.monetary_values_validation(deposit):
-            raise ValueError("Provided invalid deposit")
-        self.balance += deposit
+    def depositing(self, amount):
+        if not Client.monetary_values_validation(amount):
+            raise ValueError("Provided invalid amount of deposit")
+        self.balance += amount
         logger.info(f"Deposited {self.anonymized_monetary_value} to balance")
-        return deposit
+        return amount
 
     @staticmethod
     @log
@@ -75,6 +75,9 @@ class Client:
                 "The provided monetary value is not in a valid currency format"
             )
             return False
+        elif Client.monetary_decimal_places_validator(monetary_value) > 2:
+            logger.error("Decimal places must be equal 2")
+            return False
         elif monetary_value < Decimal("0.00"):
             logger.error("Monetary value cannot be less than 0.00")
             return False
@@ -87,3 +90,7 @@ class Client:
             random.choices(string.ascii_letters + string.digits, k=15)
         )
         return result
+
+    @staticmethod
+    def monetary_decimal_places_validator(monetary_value: Decimal) -> int:
+        return len(str(monetary_value).split(".")[-1])
