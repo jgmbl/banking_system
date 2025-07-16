@@ -5,7 +5,7 @@ import pytest
 from bank.Client import Client
 
 init_name = "Anna"
-init_balance = Decimal("10.11")
+init_balance = Decimal("9.99")
 
 init_valid_name_data = ["Adam", "John", "Lisa"]
 init_invalid_name_data = ["", "     ", "!@#$%>", 0, None]
@@ -15,7 +15,12 @@ init_valid_monetary_data = [
     Decimal("10.00"),
     Decimal("100.00"),
 ]
-init_invalid_monetary_data = [None, "Hello world!", Decimal("-0.01")]
+init_invalid_monetary_data = [
+    None,
+    "Hello world!",
+    Decimal("-0.01"),
+    Decimal("12.345"),
+]
 
 
 @pytest.mark.parametrize("name", init_valid_name_data)
@@ -71,7 +76,7 @@ def test_anonymize_name(name):
 
 
 @pytest.mark.parametrize("deposit", init_valid_monetary_data)
-def test_valid_data_epositing(deposit):
+def test_valid_data_depositing(deposit):
     client = Client(init_name, init_balance)
 
     result = client.depositing(deposit)
@@ -80,9 +85,9 @@ def test_valid_data_epositing(deposit):
     assert result == deposit
 
 
-@pytest.mark.parametrize("deposit", init_invalid_monetary_data)
-def test_invalid_data_depositing(deposit):
+@pytest.mark.parametrize("amount", init_invalid_monetary_data)
+def test_invalid_data_depositing(amount):
     client = Client(init_name, init_balance)
 
     with pytest.raises(ValueError):
-        client.depositing(deposit)
+        client.depositing(amount)
