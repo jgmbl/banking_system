@@ -51,7 +51,6 @@ class Client:
             raise ValueError("Provided invalid amount of deposit")
         self.balance += amount
         logger.info(f"Deposited {self.anonymized_monetary_value} to balance")
-        return amount
 
     @staticmethod
     @log
