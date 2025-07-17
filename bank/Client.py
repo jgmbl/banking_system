@@ -1,27 +1,9 @@
 import logging.config
 from decimal import Decimal
-from functools import wraps
+from utils.decorators import log
 
 logging.config.fileConfig("../logging.ini")
 logger = logging.getLogger("Client")
-
-
-def log(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        logger.debug(f"Starting {func.__name__.replace('_', ' ')}")
-        try:
-            result = func(*args, **kwargs)
-            return result
-        except Exception as e:
-            logger.error(
-                f"Exception raised in {func.__name__}. Exception: {str(e)}"
-            )
-            raise e
-        finally:
-            logger.debug(f"Finished {func.__name__.replace('_', ' ')}")
-
-    return wrapper
 
 
 class Client:
