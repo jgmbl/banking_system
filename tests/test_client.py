@@ -93,3 +93,24 @@ def test_invalid_data_deposit(amount):
     client = Client(init_name, init_balance)
     with pytest.raises(Exception):
         client.deposit(amount)
+
+
+@pytest.mark.parametrize("amount", [Decimal("0.00"), Decimal("100.12")])
+def test_withdraw_amount_equal_less_than_balance(amount):
+    client = Client(init_name, init_balance)
+
+    client.withdrawing(amount)
+
+    if amount == Decimal("0.00"):
+        assert client.balance == init_balance
+
+    assert client.balance >= Decimal("0.00")
+    assert client.balance == init_balance - amount
+
+
+def test_withdraw_amount_greater_than_balance():
+    greater_balance = Decimal("1230.23")
+
+    client = Client(init_name, init_balance)
+    with pytest.raises(Exception):
+        client.withdraw(greater_balance)
