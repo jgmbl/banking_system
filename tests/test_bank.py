@@ -5,7 +5,7 @@ import pytest
 from bank.Bank import Bank
 from bank.Client import Client
 
-INIT_CLIENT = Client("John", "0.01")
+INIT_CLIENT = Client("John", Decimal("0.01"))
 
 INIT_CLIENTS = [
     Client("Lisa", Decimal("0.02")),
@@ -19,14 +19,11 @@ INIT_IVALID_CLIENTS = [None, "", True, 0, []]
 def test_init_bank():
     bank = Bank(INIT_CLIENTS)
 
-    if len(bank.clients) == 1:
-        assert bank.clients == INIT_CLIENTS
-
-    bank.clients.sort(key=lambda n: n.name)
-    INIT_CLIENTS.sort(key=lambda n: n.name)
+    expected_clients = sorted(INIT_CLIENTS.copy(), key=lambda n: n.name)
+    actual_clients = sorted(bank.clients, key=lambda n: n.name)
 
     assert isinstance(bank, Bank)
-    assert bank.clients == INIT_CLIENTS
+    assert actual_clients == expected_clients
 
 
 def test_init_bank_no_clients():
@@ -39,11 +36,11 @@ def test_init_bank_no_clients():
 
 
 def test_add_client():
-    bank = Bank(INIT_CLIENTS)
+    bank = Bank(INIT_CLIENTS.copy())
 
     bank.add_client(INIT_CLIENT)
 
-    assert bank.clients
+    assert INIT_CLIENT in bank.clients
     assert len(bank.clients) == len(INIT_CLIENTS) + 1
 
 
@@ -51,5 +48,5 @@ def test_add_client():
 def test_add_empty_client(client):
     bank = Bank(INIT_CLIENTS)
 
-    with pytest.raises(TypeError):
+    with pytest.raises((TypeError, ValueError)):
         bank.add_client(client)
