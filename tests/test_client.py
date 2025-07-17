@@ -13,6 +13,7 @@ init_invalid_name_data = ["", "     ", "!@#$%>", 0, None]
 init_valid_monetary_data = [
     Decimal("0.00"),
     Decimal("10.00"),
+    Decimal("100.00"),
 ]
 init_invalid_monetary_data = [
     None,
@@ -29,8 +30,7 @@ def test_valid_name_validation(name):
 
 @pytest.mark.parametrize("name", init_invalid_name_data)
 def test_invalid_name_validation(name):
-    with pytest.raises((TypeError, ValueError)):
-        Client.name_validation(name)
+    assert Client.name_validation(name) is False
 
 
 @pytest.mark.parametrize("balance", init_valid_monetary_data)
@@ -40,8 +40,7 @@ def test_valid_balance_validation(balance):
 
 @pytest.mark.parametrize("balance", init_invalid_monetary_data)
 def test_invalid_balance_validation(balance):
-    with pytest.raises((TypeError, ValueError)):
-        Client.monetary_value_validation(balance)
+    assert Client.monetary_value_validation(balance) is False
 
 
 @pytest.mark.parametrize("name", init_valid_name_data)
@@ -57,14 +56,14 @@ def test_init_valid_client(name, balance):
 @pytest.mark.parametrize("name", init_invalid_name_data)
 @pytest.mark.parametrize("balance", init_valid_monetary_data)
 def test_init_invalid_name_client(name, balance):
-    with pytest.raises((ValueError, TypeError)):
+    with pytest.raises(ValueError):
         Client(name, balance)
 
 
 @pytest.mark.parametrize("name", init_valid_name_data)
 @pytest.mark.parametrize("balance", init_invalid_monetary_data)
 def test_init_invalid_balance_client(name, balance):
-    with pytest.raises((ValueError, TypeError)):
+    with pytest.raises(ValueError):
         Client(name, balance)
 
 
@@ -74,3 +73,23 @@ def test_anonymize_name(name):
 
     assert isinstance(anonymized_name, str)
     assert anonymized_name != name
+
+
+@pytest.mark.parametrize("amount", init_valid_monetary_data)
+def test_valid_data_deposit(amount):
+    client = Client(init_name, init_balance)
+
+    client.deposit(amount)
+
+    if amount == Decimal("0.00"):
+        assert client.balance == init_balance
+
+    assert client.balance == init_balance + amount
+
+
+@pytest.mark.parametrize("amount", init_invalid_monetary_data)
+def test_invalid_data_deposit(amount):
+    client = Client(init_name, init_balance)
+
+    with pytest.raises(ValueError):
+        client.deposit(amount)

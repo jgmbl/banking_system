@@ -2,14 +2,12 @@ import logging.config
 import random
 import string
 from decimal import Decimal
-from functools import wraps
 
 logging.config.fileConfig("../logging.ini")
 logger = logging.getLogger("Client")
 
 
 def log(func):
-    @wraps(func)
     def wrapper(*args, **kwargs):
         logger.debug(f"Starting {func.__name__.replace('_', ' ')}")
         try:
@@ -30,16 +28,10 @@ class Client:
     def __init__(self, name, balance):
         logger.debug("Starting Client class initialization")
         if not self.name_validation(name):
-            logger.error(
-                "Provided name is not a string or does not have valid format"
-            )
-            raise ValueError("Invalid name")
+            raise ValueError("Invalid name format")
 
         if not self.monetary_value_validation(balance):
-            logger.error(
-                "Provided name does not have valid monetary data type or does not have valid format"
-            )
-            raise ValueError("Invalid balance")
+            raise ValueError("Invalid monetary format of balance")
 
         self.name = name
         self.balance = balance
@@ -53,7 +45,7 @@ class Client:
         )
 
     def deposit(self, amount):
-        logger.debug("Initialized deposit process")
+        logger.debug("Initialized dep")
         if not Client.monetary_value_validation(amount):
             raise ValueError("Invalid monetary format of amount")
 
@@ -69,15 +61,13 @@ class Client:
     def name_validation(name):
         if not isinstance(name, str):
             logger.error("Provided name value is not a string")
-            raise TypeError(
-                "Provided name does not match the correct data type"
-            )
+            return False
         if not name:
             logger.error("Provided name value cannot be empty or None")
-            raise ValueError("Name cannot be empty or contain spaces")
+            return False
         elif not name.isalpha():
             logger.error("Provided name must contain only letters")
-            raise ValueError("Provided name must contain only letters")
+            return False
         return True
 
     @staticmethod
@@ -87,15 +77,13 @@ class Client:
             logger.error(
                 "The provided monetary value is not in a valid currency format"
             )
-            raise TypeError(
-                "Provided balance does not match the correct data type"
-            )
+            return False
         elif Client.monetary_decimal_places_validator(monetary_value) > 2:
             logger.error("Decimal places must be equal 2")
-            raise ValueError("Balance must have 2 decimal places")
+            return False
         elif monetary_value < Decimal("0.00"):
             logger.error("Monetary value cannot be less than 0.00")
-            raise ValueError("Balance must not have negative value")
+            return False
         return True
 
     @staticmethod
