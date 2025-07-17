@@ -1,4 +1,3 @@
-import functools
 import logging.config
 import random
 import string
@@ -9,7 +8,6 @@ logger = logging.getLogger("Client")
 
 
 def log(func):
-    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logger.debug(f"Starting {func.__name__.replace('_', ' ')}")
         try:
@@ -30,10 +28,10 @@ class Client:
     def __init__(self, name, balance):
         logger.debug("Starting Client class initialization")
         if not self.name_validation(name):
-            raise ValueError("Invalid name")
+            raise ValueError("Invalid name format")
 
-        if not self.monetary_values_validation(balance):
-            raise ValueError("Invalid balance")
+        if not self.monetary_value_validation(balance):
+            raise ValueError("Invalid monetary format of balance")
 
         self.name = name
         self.balance = balance
@@ -46,11 +44,17 @@ class Client:
             f"{self.anonymized_monetary_value}"
         )
 
-    def depositing(self, amount):
-        if not Client.monetary_values_validation(amount):
-            raise ValueError("Provided invalid amount of deposit")
+    def deposit(self, amount):
+        logger.debug("Initialized dep")
+        if not Client.monetary_value_validation(amount):
+            raise ValueError("Invalid monetary format of amount")
+
+        if amount == Decimal("0.00"):
+            logger.info("Skipped depositing due to amount equal 0.00")
+            return
+
         self.balance += amount
-        logger.info(f"Deposited {self.anonymized_monetary_value} to balance")
+        logger.info(f"Deposited {self.anonymized_monetary_value}")
 
     @staticmethod
     @log
@@ -68,7 +72,7 @@ class Client:
 
     @staticmethod
     @log
-    def monetary_values_validation(monetary_value):
+    def monetary_value_validation(monetary_value):
         if not isinstance(monetary_value, Decimal):
             logger.error(
                 "The provided monetary value is not in a valid currency format"
