@@ -86,3 +86,10 @@ def test_valid_data_deposit(amount):
 
     assert client.balance == init_balance + amount
 
+
+@pytest.mark.parametrize("amount", init_invalid_monetary_data)
+def test_invalid_data_deposit(amount):
+    client = Client(init_name, init_balance)
+
+    with pytest.raises(ValueError):
+        client.deposit(amount)
