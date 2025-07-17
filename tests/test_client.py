@@ -68,14 +68,6 @@ def test_init_invalid_balance_client(name, balance):
         Client(name, balance)
 
 
-@pytest.mark.parametrize("name", init_valid_name_data)
-def test_anonymize_name(name):
-    anonymized_name = Client.anonymize_name()
-
-    assert isinstance(anonymized_name, str)
-    assert anonymized_name != name
-
-
 @pytest.mark.parametrize("amount", [Decimal("0.00"), Decimal("100.12")])
 def test_valid_data_deposit(amount):
     client = Client(init_name, init_balance)
@@ -99,7 +91,7 @@ def test_invalid_data_deposit(amount):
 def test_withdraw_amount_equal_less_than_balance(amount):
     client = Client(init_name, init_balance)
 
-    client.withdrawing(amount)
+    client.withdraw(amount)
 
     if amount == Decimal("0.00"):
         assert client.balance == init_balance

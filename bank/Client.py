@@ -1,6 +1,4 @@
 import logging.config
-import random
-import string
 from decimal import Decimal
 from functools import wraps
 
@@ -45,9 +43,7 @@ class Client:
         self.name = name
         self.balance = balance
 
-        logger.info(
-            f"Successfully initialized Client class"
-        )
+        logger.info("Successfully initialized Client class")
 
     def deposit(self, amount):
         logger.debug("Initialized deposit process")
@@ -71,8 +67,9 @@ class Client:
             return
         elif amount > self.balance:
             logger.error("Provided amount is greater than balance")
-            raise ValueError("Amount if withdrawing cannot be greater than "
-                             "balance")
+            raise ValueError(
+                "Amount if withdrawing cannot be greater than balance"
+            )
 
         self.balance -= amount
         logger.info("Successfully withdrew money from balance")
@@ -110,14 +107,6 @@ class Client:
             logger.error("Monetary value cannot be less than 0.00")
             raise ValueError("Balance must not have negative value")
         return True
-
-    @staticmethod
-    @log
-    def anonymize_name():
-        result = "".join(
-            random.choices(string.ascii_letters + string.digits, k=15)
-        )
-        return result
 
     @staticmethod
     def monetary_decimal_places_validator(monetary_value: Decimal) -> int:
