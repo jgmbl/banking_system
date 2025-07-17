@@ -1,6 +1,7 @@
 import logging.config
 
 from bank.Client import Client
+from utils.decorators import log
 
 logging.config.fileConfig("../logging.ini")
 logger = logging.getLogger("Bank")
@@ -16,6 +17,7 @@ class Bank:
 
         logger.info("Successfully initialized Bank object")
 
+    @log
     def add_client(self, client: Client):
         logger.debug("Initialized adding client process")
         if not client:
@@ -26,3 +28,4 @@ class Bank:
             raise TypeError("Client must be an instance of Client class")
 
         self.clients.append(client)
+        logger.info("Successfully added new client")
