@@ -1,5 +1,7 @@
+import itertools
 import logging.config
 from decimal import Decimal
+
 from utils.decorators import log
 
 logging.config.fileConfig("../logging.ini")
@@ -7,6 +9,8 @@ logger = logging.getLogger("Client")
 
 
 class Client:
+    client_id = itertools.count()
+
     def __init__(self, name, balance):
         logger.debug("Starting Client class initialization")
         if not self.name_validation(name):
@@ -25,6 +29,7 @@ class Client:
 
         self.name = name
         self._balance = balance
+        self._id = next(Client.client_id)
 
         logger.info("Successfully initialized Client class")
 
@@ -66,6 +71,10 @@ class Client:
     @balance.setter
     def balance(self, b):
         self._balance = b
+
+    @property
+    def id(self):
+        return self._id
 
     @staticmethod
     @log
