@@ -37,19 +37,16 @@ class Client:
 
         if not self.monetary_value_validation(balance):
             logger.error(
-                "Provided name does not have valid monetary data type or does not have valid format"
+                "Provided name does not have valid monetary data type or "
+                "does not have valid format"
             )
             raise ValueError("Invalid balance")
 
         self.name = name
         self.balance = balance
-        self.anonymized_name = self.anonymize_name()
-        self.anonymized_monetary_value = "***"
 
         logger.info(
-            f"Successfully initialized Client class for name "
-            f"{self.anonymized_name} and balance "
-            f"{self.anonymized_monetary_value}"
+            f"Successfully initialized Client class"
         )
 
     def deposit(self, amount):
@@ -62,7 +59,23 @@ class Client:
             return
 
         self.balance += amount
-        logger.info(f"Deposited {self.anonymized_monetary_value}")
+        logger.info("Successfully deposited money to balance")
+
+    def withdraw(self, amount):
+        logger.debug("Initialized withdraw process")
+        if not Client.monetary_value_validation(amount):
+            raise ValueError("Invalid monetary format of amount")
+
+        if amount == Decimal("0.00"):
+            logger.info("Skipped withdrawing due to amount equal 0.00")
+            return
+        elif amount > self.balance:
+            logger.error("Provided amount is greater than balance")
+            raise ValueError("Amount if withdrawing cannot be greater than "
+                             "balance")
+
+        self.balance -= amount
+        logger.info("Successfully withdrew money from balance")
 
     @staticmethod
     @log
