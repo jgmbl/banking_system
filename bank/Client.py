@@ -39,6 +39,7 @@ class Client:
                 "does not have valid format"
             )
             raise ValueError("Invalid balance")
+        Client.standardize_decimal_places(balance)
 
         self.name = name
         self.balance = balance
@@ -54,6 +55,7 @@ class Client:
             logger.info("Skipped depositing due to amount equal 0.00")
             return
 
+        Client.standardize_decimal_places(amount)
         self.balance += amount
         logger.info("Successfully deposited money to balance")
 
@@ -71,6 +73,7 @@ class Client:
                 "Amount if withdrawing cannot be greater than balance"
             )
 
+        Client.standardize_decimal_places(amount)
         self.balance -= amount
         logger.info("Successfully withdrew money from balance")
 
@@ -111,3 +114,7 @@ class Client:
     @staticmethod
     def monetary_decimal_places_validator(monetary_value: Decimal) -> int:
         return len(str(monetary_value).split(".")[-1])
+
+    @staticmethod
+    def standardize_decimal_places(num: Decimal) -> Decimal:
+        return num.quantize(Decimal("0.00"))
