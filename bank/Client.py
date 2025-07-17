@@ -42,7 +42,7 @@ class Client:
         Client.standardize_decimal_places(balance)
 
         self.name = name
-        self.balance = balance
+        self._balance = balance
 
         logger.info("Successfully initialized Client class")
 
@@ -76,6 +76,14 @@ class Client:
         Client.standardize_decimal_places(amount)
         self.balance -= amount
         logger.info("Successfully withdrew money from balance")
+
+    @property
+    def balance(self):
+        return self._balance
+
+    @balance.setter
+    def balance(self, b):
+        self._balance = b
 
     @staticmethod
     @log
