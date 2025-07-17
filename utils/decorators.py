@@ -8,7 +8,7 @@ def log(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         logger_name = func.__module__
-        logger = logging.getLogger(str(logger_name).split('.')[-1])
+        logger = logging.getLogger(str(logger_name).split(".")[-1])
         logger.debug(f"Starting {func.__name__.replace('_', ' ')}")
         try:
             result = func(*args, **kwargs)
