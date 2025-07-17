@@ -35,12 +35,12 @@ def test_invalid_name_validation(name):
 
 @pytest.mark.parametrize("balance", init_valid_monetary_data)
 def test_valid_balance_validation(balance):
-    assert Client.monetary_values_validation(balance) is True
+    assert Client.monetary_value_validation(balance) is True
 
 
 @pytest.mark.parametrize("balance", init_invalid_monetary_data)
 def test_invalid_balance_validation(balance):
-    assert Client.monetary_values_validation(balance) is False
+    assert Client.monetary_value_validation(balance) is False
 
 
 @pytest.mark.parametrize("name", init_valid_name_data)
@@ -75,18 +75,21 @@ def test_anonymize_name(name):
     assert anonymized_name != name
 
 
-@pytest.mark.parametrize("deposit", init_valid_monetary_data)
-def test_valid_data_depositing(deposit):
+@pytest.mark.parametrize("amount", init_valid_monetary_data)
+def test_valid_data_deposit(amount):
     client = Client(init_name, init_balance)
 
-    client.depositing(deposit)
+    client.deposit(amount)
 
-    assert client.balance == init_balance + deposit
+    if amount == Decimal("0.00"):
+        assert client.balance == init_balance
+
+    assert client.balance == init_balance + amount
 
 
 @pytest.mark.parametrize("amount", init_invalid_monetary_data)
-def test_invalid_data_depositing(amount):
+def test_invalid_data_deposit(amount):
     client = Client(init_name, init_balance)
 
     with pytest.raises(ValueError):
-        client.depositing(amount)
+        client.deposit(amount)
