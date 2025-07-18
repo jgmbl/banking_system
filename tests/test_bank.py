@@ -88,15 +88,24 @@ def test_get_client_not_present(client):
 
 def test_get_clients_balances():
     init_bank = Bank(INIT_CLIENTS_LIST)
+    init_clients_list_balances = [
+        init_client.balance for init_client in INIT_CLIENTS_LIST
+    ]
 
-    clients_balances = init_bank.get_clients_balances()
+    balances = init_bank.get_balances()
 
-    assert isinstance(clients_balances, list)
+    assert isinstance(balances, list)
     assert all(
-        isinstance(client_balance, Decimal)
-        for client_balance in clients_balances
+        isinstance(client_balance, Decimal) for client_balance in balances
     )
-    assert (
-        sorted([client.balance for client in init_bank.clients.values()])
-        == clients_balances
-    )
+    assert sorted(init_clients_list_balances) == sorted(balances)
+
+
+def test_get_clients_no_balance():
+    init_bank = Bank(INIT_CLIENT)
+
+    init_bank.remove_client(INIT_CLIENT.id)
+
+    balances = init_bank.get_balances()
+
+    assert balances == []
