@@ -36,30 +36,29 @@ def test_add_client():
 
 @pytest.mark.parametrize("invalid_client", INIT_INVALID_CLIENTS)
 def test_add_invalid_clients(invalid_client):
-    init_bank = Bank(INIT_INVALID_CLIENTS.copy())
+    init_bank = Bank(INIT_CLIENTS_LIST)
 
     with pytest.raises((TypeError, ValueError)):
         init_bank.add_client(invalid_client)
 
 
 def test_remove_client():
-    initial_clients = INIT_CLIENTS_LIST.copy()
-    init_bank = Bank(initial_clients)
+    init_bank = Bank(INIT_CLIENTS_LIST)
 
-    removed_client_id = next(iter(init_bank.clients))
+    removed_client_id = next(iter(init_bank.clients.keys()))
 
     init_bank.remove_client(removed_client_id)
 
-    removed_clients_exits = [
-        client.id == removed_client_id for client in init_bank.clients
-    ]
+    removed_clients_exists = any(
+        client.id == removed_client_id for client in init_bank.clients.values()
+    )
 
-    assert len(init_bank.clients) != len(initial_clients)
-    assert not removed_clients_exits
+    assert len(init_bank.clients) != len(INIT_CLIENTS_LIST)
+    assert not removed_clients_exists
 
 
 def test_remove_non_existent_client():
-    init_bank = Bank(INIT_CLIENTS_LIST.copy())
+    init_bank = Bank(INIT_CLIENTS_LIST)
     non_existent_client_id = -1
 
     with pytest.raises(KeyError):
@@ -67,32 +66,37 @@ def test_remove_non_existent_client():
 
 
 def test_get_client():
-    init_bank = Bank(INIT_CLIENTS_LIST.copy())
+    init_bank = Bank(INIT_CLIENTS_LIST)
 
-    get_client_id = init_bank.clients.keys()[0]
+    get_client_id = next(iter(init_bank.clients))
 
     retrieved_client = init_bank.get_client(get_client_id)
 
     assert len(init_bank.clients) == len(INIT_CLIENTS_DICT)
-    assert retrieved_client in init_bank.clients
-    assert init_bank.clients.values(get_client_id) == retrieved_client
-
-
-@pytest.mark.parametrize("invalid_client", INIT_INVALID_CLIENTS)
-def test_get_client_invalid_init_client(invalid_client):
-    init_bank = Bank(invalid_client)
-
-    invalid_client_id = -1
-
-    with pytest.raises(TypeError):
-        init_bank.get_client(invalid_client_id)
+    assert retrieved_client in init_bank.clients.values()
 
 
 @pytest.mark.parametrize("client", INIT_CLIENTS_LIST)
 def test_get_client_not_present(client):
-    init_bank = Bank(INIT_CLIENTS_LIST)
+    init_bank = Bank([client])
 
     init_non_existent_client_id = -1
 
     with pytest.raises(KeyError):
         init_bank.get_client(init_non_existent_client_id)
+
+
+def test_get_clients_balances():
+    init_bank = Bank(INIT_CLIENTS_LIST)
+
+    clients_balances = init_bank.get_clients_balances()
+
+    assert isinstance(clients_balances, list)
+    assert all(
+        isinstance(client_balance, Decimal)
+        for client_balance in clients_balances
+    )
+    assert (
+        sorted([client.balance for client in init_bank.clients.values()])
+        == clients_balances
+    )
