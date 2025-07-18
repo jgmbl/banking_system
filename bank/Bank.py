@@ -10,8 +10,15 @@ logger = logging.getLogger("Bank")
 class Bank:
     def __init__(self, clients):
         logger.debug("Starting client class initialization")
-        if isinstance(clients, Client):
-            self.clients = [clients]
+        if not isinstance(clients, Client) and not isinstance(clients, list):
+            logger.error(
+                f'Provided type of clients "{type(clients)}" have '
+                f"not valid type"
+            )
+            raise TypeError("Provided clients have not valid type")
+        elif not clients:
+            logger.error("Provided no value for client parameter")
+            raise ValueError("Clients are not provided")
 
         self.clients = self._clients_list_to_dict(clients)
 
