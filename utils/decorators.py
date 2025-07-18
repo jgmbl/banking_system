@@ -1,7 +1,9 @@
 import logging.config
 from functools import wraps
 
-logging.config.fileConfig("../logging.ini")
+import definitions
+
+logging.config.fileConfig(definitions.CONFIG_PATH)
 
 
 def log(func):

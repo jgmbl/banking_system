@@ -1,9 +1,11 @@
 import logging.config
 
+import definitions
 from bank.Client import Client
 from utils.decorators import log
+from utils.helpers import list_to_id_dict
 
-logging.config.fileConfig("../logging.ini")
+logging.config.fileConfig(definitions.CONFIG_PATH)
 logger = logging.getLogger("Bank")
 
 
@@ -23,7 +25,7 @@ class Bank:
         if isinstance(clients, Client):
             clients = [clients]
 
-        self.clients = self._clients_list_to_dict(clients)
+        self.clients = list_to_id_dict(clients, Client)
 
         logger.info("Successfully initialized Bank object")
 
@@ -82,13 +84,6 @@ class Bank:
         clients_balances = [client.balance for client in get_clients]
         if len(clients_balances) == 0:
             logger.warning("Bank does not have clients")
+            return None
 
         return clients_balances
-
-    @log
-    def _clients_list_to_dict(self, clients_list):
-        clients_dict = dict()
-        for client in clients_list:
-            clients_dict[client.id] = client
-
-        return clients_dict

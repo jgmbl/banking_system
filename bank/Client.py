@@ -2,9 +2,10 @@ import itertools
 import logging.config
 from decimal import Decimal
 
+import definitions
 from utils.decorators import log
 
-logging.config.fileConfig("../logging.ini")
+logging.config.fileConfig(definitions.CONFIG_PATH)
 logger = logging.getLogger("Client")
 
 
