@@ -3,7 +3,7 @@ import logging.config
 import definitions
 from bank.Client import Client
 from utils.decorators import log
-from utils.helpers import list_to_id_dict
+from utils.helpers import object_lists_to_dict
 
 logging.config.fileConfig(definitions.CONFIG_PATH)
 logger = logging.getLogger("Bank")
@@ -12,20 +12,20 @@ logger = logging.getLogger("Bank")
 class Bank:
     def __init__(self, clients):
         logger.debug("Starting client class initialization")
-        if not isinstance(clients, Client) and not isinstance(clients, list):
-            logger.error(
-                f'Provided type of clients "{type(clients)}" have '
-                f"not valid type"
-            )
-            raise TypeError("Provided clients have not valid type")
-        elif not clients:
-            logger.error("Provided no value for client parameter")
-            raise ValueError("Clients are not provided")
 
-        if isinstance(clients, Client):
-            clients = [clients]
+        if not isinstance(clients, list):
+            logger.error("Provided clients must be a list")
+            raise TypeError("Clients must be a list or Client class object")
 
-        self.clients = list_to_id_dict(clients, Client)
+        dict_of_clients = object_lists_to_dict(
+            clients,
+            "id",
+            validation=True,
+            validation_mode=("datatype", "has_attribute"),
+            reference=(Client, "id"),
+        )
+
+        self.clients = dict_of_clients
 
         logger.info("Successfully initialized Bank object")
 
@@ -83,7 +83,6 @@ class Bank:
 
         clients_balances = [client.balance for client in get_clients]
         if len(clients_balances) == 0:
-            logger.warning("Bank does not have clients")
-            return None
+            logger.info("Bank does not have clients")
 
         return clients_balances
