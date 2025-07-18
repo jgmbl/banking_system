@@ -102,10 +102,9 @@ def test_get_clients_balances():
 
 
 def test_get_clients_no_balance():
-    init_bank = Bank(INIT_CLIENT)
-
-    init_bank.remove_client(INIT_CLIENT.id)
+    init_bank = Bank([])
 
     balances = init_bank.get_balances()
 
+    assert isinstance(balances, list)
     assert balances == []
