@@ -68,18 +68,22 @@ def test_remove_non_existent_client():
 
 
 def test_get_client():
-    init_bank = Bank(INIT_CLIENTS_LIST)
+    init_bank = Bank(INIT_CLIENT)
 
-    init_bank.get_client(INIT_CLIENT)
+    get_client_id = init_bank.clients.keys()
+
+    init_bank.get_client(get_client_id)
 
     assert not init_bank.clients
-    assert len(init_bank.clients) != len(INIT_CLIENTS_DICT)
+    assert len(init_bank.clients) == len(INIT_CLIENT)
     assert INIT_CLIENT in init_bank.clients
 
 
 @pytest.mark.parametrize("invalid_client", INIT_INVALID_CLIENTS)
 def test_get_client_invalid_init_client(invalid_client):
-    init_bank = Bank(INIT_CLIENTS_LIST)
+    init_bank = Bank(invalid_client)
+
+    invalid_client_id = init_bank.clients.keys()
 
     with pytest.raises(TypeError):
-        init_bank.get_client(invalid_client)
+        init_bank.get_client(invalid_client_id)
