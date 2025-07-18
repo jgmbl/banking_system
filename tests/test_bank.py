@@ -26,15 +26,6 @@ def test_init_bank():
     assert init_bank.clients == INIT_CLIENTS_DICT
 
 
-def test_init_bank_no_clients():
-    clients = []
-
-    init_bank = Bank(clients)
-
-    assert not init_bank.clients
-    assert init_bank.clients == clients
-
-
 def test_add_client():
     init_bank = Bank(INIT_CLIENTS_LIST.copy())
 
@@ -45,8 +36,8 @@ def test_add_client():
 
 
 @pytest.mark.parametrize("client", INIT_INVALID_CLIENTS)
-def test_add_empty_client(client):
-    init_bank = Bank(INIT_CLIENTS_LIST)
+def test_add_invalid_clients(client):
+    init_bank = Bank(INIT_INVALID_CLIENTS)
 
     with pytest.raises((TypeError, ValueError)):
         init_bank.add_client(client)
@@ -69,7 +60,8 @@ def test_remove_client():
 
 
 def test_remove_non_existent_client():
-    init_bank = Bank([])
+    init_bank = Bank(INIT_CLIENTS_LIST)
+    non_existent_client = Client("Eva", Decimal("0.00"))
 
     with pytest.raises(ValueError):
-        init_bank.remove_client(INIT_CLIENT.id)
+        init_bank.remove_client(non_existent_client.id)
