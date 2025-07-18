@@ -73,6 +73,17 @@ class Bank:
         return self.clients[client_id]
 
     @log
+    def get_clients_balances(self):
+        get_clients = list(self.clients.values())
+
+        clients_balances = []
+
+        for client in get_clients:
+            clients_balances.append(client.balance)
+
+        return clients_balances
+
+    @log
     def _clients_list_to_dict(self, clients_list):
         clients_dict = dict()
         for client in clients_list:
