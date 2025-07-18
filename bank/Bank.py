@@ -20,6 +20,9 @@ class Bank:
             logger.error("Provided no value for client parameter")
             raise ValueError("Clients are not provided")
 
+        if isinstance(clients, Client):
+            clients = [clients]
+
         self.clients = self._clients_list_to_dict(clients)
 
         logger.info("Successfully initialized Bank object")
@@ -38,7 +41,7 @@ class Bank:
 
     @log
     def remove_client(self, client_id: int):
-        if not client_id:
+        if client_id is None:
             logger.error("Provided None value or empty datatype")
             raise ValueError("Provided client id cannot be empty")
         if not isinstance(client_id, int):
@@ -73,13 +76,12 @@ class Bank:
         return self.clients[client_id]
 
     @log
-    def get_clients_balances(self):
+    def get_balances(self):
         get_clients = list(self.clients.values())
 
-        clients_balances = []
-
-        for client in get_clients:
-            clients_balances.append(client.balance)
+        clients_balances = [client.balance for client in get_clients]
+        if len(clients_balances) == 0:
+            logger.warning("Bank does not have clients")
 
         return clients_balances
 
