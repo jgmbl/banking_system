@@ -37,6 +37,24 @@ class Bank:
         logger.info("Successfully added new client")
 
     @log
+    def remove_client(self, client_id: int):
+        if not client_id:
+            logger.error("Provided None value or empty datatype")
+            raise ValueError("Provided client id cannot be empty")
+        if not isinstance(client_id, int):
+            logger.error("Provided invalid datatype")
+            raise TypeError("Client id must be an integer")
+
+        if client_id not in self.clients:
+            logger.error("Client with provided id does not exist")
+            raise KeyError(
+                f'Client with provided id "{client_id}" does not exist'
+            )
+
+        logger.info("Successfully removed client")
+        del self.clients[client_id]
+
+    @log
     def _clients_list_to_dict(self, clients_list):
         clients_dict = dict()
         for client in clients_list:
